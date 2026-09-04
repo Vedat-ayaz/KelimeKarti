@@ -1,0 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { STORAGE_KEYS } from '../constants/storageKeys';
+import { AsyncStorageWordRepository } from '../data/repositories/AsyncStorageWordRepository';
+import { Word } from '../domain/entities/Word';
+const word: Word = { id: '1', term: 'Apple', translation: 'Elma', isLearned: false, correctCount: 0, wrongCount: 0, createdAt: '2026-01-01T00:00:00.000Z' };
+describe('AsyncStorageWordRepository', () => { const repository = new AsyncStorageWordRepository(); beforeEach(async () => AsyncStorage.clear());
+  it('writes an added word', async () => { await repository.add(word); expect(JSON.parse((await AsyncStorage.getItem(STORAGE_KEYS.words)) ?? '[]')).toEqual([word]); });
+  it('reads words', async () => { await AsyncStorage.setItem(STORAGE_KEYS.words, JSON.stringify([word])); expect(await repository.getAll()).toEqual([word]); });
+  it('removes a word', async () => { await repository.saveAll([word]); await repository.remove(word.id); expect(await repository.getAll()).toEqual([]); });
+  it('returns an empty list for corrupt data', async () => { await AsyncStorage.setItem(STORAGE_KEYS.words, '{bad'); expect(await repository.getAll()).toEqual([]); });
+});
