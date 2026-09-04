@@ -1,8 +1,10 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAppColors } from '../theme/colors';
 
-export function AppButton({ title, onPress, variant = 'primary', disabled = false }: { title: string; onPress(): void; variant?: 'primary' | 'success' | 'danger' | 'secondary'; disabled?: boolean }) {
+export function AppButton({ title, onPress, variant = 'primary', disabled = false, icon }: { title: string; onPress(): void; variant?: 'primary' | 'success' | 'danger' | 'secondary'; disabled?: boolean; icon?: keyof typeof Ionicons.glyphMap }) {
   const colors = useAppColors(); const color = variant === 'success' ? colors.success : variant === 'danger' ? colors.danger : colors.primary;
-  return <Pressable accessibilityRole="button" disabled={disabled} onPress={onPress} style={({ pressed }) => [styles.button, { backgroundColor: variant === 'secondary' ? colors.surface : color, borderColor: color, opacity: disabled ? 0.45 : pressed ? 0.8 : 1 }]}><Text style={[styles.text, { color: variant === 'secondary' ? color : '#FFFFFF' }]}>{title}</Text></Pressable>;
+  const foreground = variant === 'secondary' ? colors.text : '#FFFFFF';
+  return <Pressable accessibilityRole="button" disabled={disabled} onPress={onPress} style={({ pressed }) => [styles.button, { backgroundColor: variant === 'secondary' ? colors.surface : color, borderColor: variant === 'secondary' ? colors.border : color, opacity: disabled ? 0.45 : pressed ? 0.82 : 1 }]}><View style={styles.content}>{icon ? <Ionicons name={icon} size={19} color={foreground} /> : null}<Text style={[styles.text, { color: foreground }]}>{title}</Text></View></Pressable>;
 }
-const styles = StyleSheet.create({ button: { minHeight: 50, borderRadius: 14, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 18, borderWidth: 1 }, text: { fontSize: 16, fontWeight: '700' } });
+const styles = StyleSheet.create({ button: { minHeight: 52, borderRadius: 16, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20, borderWidth: 1 }, content: { flexDirection: 'row', alignItems: 'center', gap: 8 }, text: { fontSize: 16, fontWeight: '700', letterSpacing: -0.15 } });
